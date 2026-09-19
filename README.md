@@ -63,49 +63,6 @@ data/
 程序里的「关于」窗口会直接显示当前是哪种模式，以及数据的完整路径。
 `library.json` 是纯文本，随时可以备份或手动改。删除仓库里的游戏**不会**删除游戏本体。
 
-## 从源码构建
-
-需要 [.NET SDK 8+](https://dotnet.microsoft.com/download)。打安装包还需要
-[Inno Setup 6](https://jrsoftware.org/isdl.php)。
-
-```powershell
-# 只编译运行
-dotnet run --project src/GameVault.csproj
-
-# 发布单文件 exe
-dotnet publish src/GameVault.csproj -c Release -r win-x64 --self-contained true `
-  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none `
-  -o src/publish
-
-# 一键出两个包（便携版 zip + 安装包）
-pwsh -File build.ps1
-# Inno Setup 装在别处时：
-pwsh -File build.ps1 -InnoCompiler "F:\Inno Setup 6\ISCC.exe"
-```
-
-### 目录结构
-
-```
-src/          C# 源码（WPF）
-installer/    Inno Setup 脚本 + 简体中文语言文件
-docs/         截图
-build.ps1     发布 + 打包脚本
-```
-
-主要文件：
-
-```
-MainWindow.xaml(.cs)   主窗口：侧边栏、封面网格、继续游戏横幅、窗口按钮
-Theme.xaml             深色主题，所有控件的完整模板
-SteamApi.cs            Steam 搜索、详情、封面下载、本地库扫描、VDF 解析
-ExternalMetadata.cs    VNDB + 萌娘百科，以及「保证简介是中文」的流程
-Translator.cs          机器翻译（彩云小译 → 有道 → MyMemory）
-Wallpaper.cs           壁纸导入与分辨率校验
-TrayIcon.cs            系统托盘
-StartupRegistration.cs 开机自启动（写当前用户 Run 项）
-Paths.cs               数据目录定位（便携 / 安装两种模式）
-```
-
 ## 用到的第三方服务
 
 全部是公开接口，**核心功能不需要任何 API Key**。
@@ -122,9 +79,9 @@ Paths.cs               数据目录定位（便携 / 安装两种模式）
 
 ## 免责声明
 
-- 本项目是**免费的个人作品**，按「现状」提供，不附带任何担保。
+- 本项目是免费的个人作品，按「现状」提供，不附带任何担保。
 - 与 Valve、Steam 以及任何游戏开发商、发行商**均无关联**，也未获其授权或认可。
-- **不提供、不下载、不分发任何游戏本体**，也不含任何破解或绕过正版验证的功能，
+- 不提供、不下载、不分发任何游戏本体**，也不含任何破解或绕过正版验证的功能，
   只负责启动你自己电脑上已经存在的程序。
 - 机器翻译结果仅供参考。
 - 游戏库数据请自行备份，因误删或故障造成的数据丢失作者不承担责任。
