@@ -29,10 +29,10 @@ if ($LASTEXITCODE -ne 0) { throw 'dotnet publish 失败' }
 Copy-Item (Join-Path $root 'README.md') $publish -Force
 
 Write-Host '==> 打包便携版 zip'
-$portable = Join-Path $dist '一切游戏管理家'
+$portable = Join-Path $dist 'GameVault-Portable'
 New-Item -ItemType Directory -Force -Path $portable | Out-Null
 Copy-Item "$publish\*" $portable -Force
-$zip = Join-Path $dist '一切游戏管理家-便携版-1.0.0.zip'
+$zip = Join-Path $dist 'GameVault-1.0.0-Portable.zip'
 Compress-Archive -Path $portable -DestinationPath $zip -CompressionLevel Optimal
 
 Write-Host '==> 编译安装包'
