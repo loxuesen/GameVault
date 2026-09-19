@@ -1,0 +1,195 @@
+<Window x:Class="GameVault.EditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{StaticResource DialogWindow}"
+        Title="添加游戏" Width="920" Height="780" MinWidth="820" MinHeight="620"
+        ResizeMode="CanResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        WindowStyle="None">
+
+    <!-- The dialog draws its own close button, so the native title bar is removed to avoid
+         showing two. WindowChrome keeps edge resizing and window snapping. -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource DialogHeader}" MouseLeftButtonDown="Chrome_Drag">
+            <Grid>
+                <TextBlock x:Name="HeaderTitle" Text="添加游戏" Style="{StaticResource DialogTitle}" />
+                <Button Style="{StaticResource DialogCloseButton}" Click="Cancel_Click" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20,18,14,18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="190" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- ============ cover ============ -->
+                <StackPanel Grid.Column="0">
+                    <Border Height="272" CornerRadius="8" ClipToBounds="True" Background="{StaticResource Input}"
+                            BorderBrush="{StaticResource Line}" BorderThickness="1">
+                        <Grid>
+                            <TextBlock x:Name="CoverPlaceholder" Text="封面" FontSize="12"
+                                       Foreground="{StaticResource TextDim}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Image x:Name="CoverImage" Stretch="UniformToFill" />
+                        </Grid>
+                    </Border>
+                    <Button Content="选择图片…" Style="{StaticResource TinyButton}" Margin="0,9,0,0" Click="PickCover_Click" />
+                    <Button Content="从 Steam 获取" Style="{StaticResource TinyButton}" Margin="0,6,0,0" Click="SteamCover_Click" />
+                    <Button Content="从 SteamGridDB 获取" Style="{StaticResource TinyButton}" Margin="0,6,0,0" Click="GridDbCover_Click" />
+                    <Button Content="清除封面" Style="{StaticResource TinyButton}" Margin="0,6,0,0" Click="ClearCover_Click" />
+                </StackPanel>
+
+                <!-- ============ fields ============ -->
+                <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                    <TextBlock Text="名称 *" Style="{StaticResource FieldLabel}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="NameBox" Grid.Column="0" />
+                        <Button x:Name="LookupButton" Grid.Column="1" Content="自动获取信息"
+                                Style="{StaticResource TinyButton}" Margin="8,0,0,0" Click="Lookup_Click" />
+                    </Grid>
+
+                    <Border x:Name="ResultPanel" Visibility="Collapsed" Margin="0,10,0,0" Background="{StaticResource Input}"
+                            BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="6" Padding="6">
+                        <StackPanel>
+                            <TextBlock x:Name="ResultHint" Style="{StaticResource Hint}" Margin="6,4,6,6" />
+                            <ListBox x:Name="ResultList" MaxHeight="190" SelectionChanged="Result_Selected" />
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="启动方式" Style="{StaticResource FieldLabel}" Margin="0,16,0,5" />
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="ModeExe" Content="直接运行程序" IsChecked="True" Margin="0,0,20,0" />
+                        <RadioButton x:Name="ModeSteam" Content="通过 Steam 启动" Margin="0,0,20,0" />
+                        <RadioButton x:Name="ModeShell" Content="系统默认方式" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="ExeSection" Margin="0,14,0,0">
+                        <TextBlock x:Name="ExeLabel" Text="可执行文件" Style="{StaticResource FieldLabel}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="ExeBox" Grid.Column="0" />
+                            <Button Grid.Column="1" Content="浏览…" Style="{StaticResource TinyButton}"
+                                    Margin="8,0,0,0" Click="BrowseExe_Click" />
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel x:Name="AppIdSection" Margin="0,14,0,0" Visibility="Collapsed">
+                        <TextBlock Text="Steam AppID" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="AppIdBox" />
+                    </StackPanel>
+
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="启动参数" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="ArgsBox" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                            <TextBlock Text="工作目录" Style="{StaticResource FieldLabel}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="WorkDirBox" Grid.Column="0" />
+                                <Button Grid.Column="1" Content="…" Style="{StaticResource TinyButton}"
+                                        Margin="8,0,0,0" Click="BrowseDir_Click" />
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="简介" Style="{StaticResource FieldLabel}" Margin="0,14,0,5" />
+                    <TextBox x:Name="DescriptionBox" Style="{StaticResource MultilineBox}" Height="110" />
+
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="开发商" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="DeveloperBox" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="8,0,8,0">
+                            <TextBlock Text="发行商" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="PublisherBox" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                            <TextBlock Text="发行日期" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="ReleaseBox" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="类型标签（用逗号分隔）" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="GenresBox" />
+                        </StackPanel>
+                        <CheckBox x:Name="FavoriteBox" Grid.Column="1" Content="加入收藏"
+                                  VerticalAlignment="Bottom" Margin="0,0,0,7" />
+                    </Grid>
+
+                    <TextBlock Text="分类" Style="{StaticResource FieldLabel}" Margin="0,16,0,5" />
+                    <ItemsControl x:Name="CategoryChips">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Grid Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="NewCategoryBox" Grid.Column="0" />
+                        <Button Grid.Column="1" Content="新建分类" Style="{StaticResource TinyButton}"
+                                Margin="8,0,0,0" Click="AddCategory_Click" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="#131D28" BorderBrush="{StaticResource LineSoft}"
+                BorderThickness="0,1,0,0" Padding="18,12">
+            <Grid>
+                <Button x:Name="DeleteButton" Content="删除游戏" Style="{StaticResource DangerButton}"
+                        HorizontalAlignment="Left" Visibility="Collapsed" Click="Delete_Click" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="取消" Click="Cancel_Click" />
+                    <Button x:Name="SaveButton" Content="保存" Style="{StaticResource PrimaryButton}"
+                            Margin="10,0,0,0" Click="Save_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.RowSpan="3" Style="{StaticResource DialogOutline}" />
+    </Grid>
+</Window>

@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- The notification-area icon is WinForms' NotifyIcon; its implicit usings are removed
+         below so they cannot collide with the WPF types of the same name. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>一切游戏管理家</AssemblyName>
+    <RootNamespace>GameVault</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <AssemblyTitle>一切游戏管理家</AssemblyTitle>
+    <Product>一切游戏管理家</Product>
+    <SatelliteResourceLanguages>zh-Hans;en</SatelliteResourceLanguages>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <DebugType>embedded</DebugType>
+    <!--
+      WFAC010 asks for DPI to be configured through ApplicationHighDpiMode. That advice is for
+      WinForms applications; this is a WPF application that only borrows NotifyIcon, and its DPI
+      awareness comes from app.manifest, which is the setting WPF actually honours.
+    -->
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Also exposed as a WPF resource so windows can reference it directly. -->
+    <Resource Include="app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- WinForms and WPF both define Application, MessageBox, Color and others; the whole
+         project is written against the WPF ones, so these implicit usings must not apply. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+</Project>

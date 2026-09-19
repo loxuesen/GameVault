@@ -1,0 +1,156 @@
+<Window x:Class="GameVault.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{StaticResource DialogWindow}"
+        Title="设置" Width="700" Height="740" MinWidth="560" MinHeight="500"
+        ResizeMode="CanResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        WindowStyle="None">
+
+    <!-- The dialog draws its own close button, so the native title bar is removed to avoid
+         showing two. WindowChrome keeps edge resizing and window snapping. -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource DialogHeader}" MouseLeftButtonDown="Chrome_Drag">
+            <Grid>
+                <TextBlock Text="设置" Style="{StaticResource DialogTitle}" />
+                <Button Style="{StaticResource DialogCloseButton}" Click="Close_Click" />
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="22,18,16,18">
+            <StackPanel>
+                <Border Background="#12202E" BorderBrush="{StaticResource Accent}" BorderThickness="3,0,0,0"
+                        CornerRadius="4" Padding="13,11" Margin="0,0,0,20">
+                    <TextBlock TextWrapping="Wrap" FontSize="12.5" Foreground="#A9B8C6" LineHeight="20">
+                        核心功能<Bold Foreground="#C7D5E0">不需要任何 API Key</Bold>。Steam 上的游戏走 Steam 公开接口；
+                        Steam 没有收录的游戏（自己导入的非 Steam 游戏）会自动改用
+                        <Bold Foreground="#C7D5E0">VNDB</Bold> 和 <Bold Foreground="#C7D5E0">萌娘百科</Bold>
+                        抓取封面、开发商、发行日期和<Bold Foreground="#C7D5E0">中文简介</Bold>，同样不用填任何东西。
+                        如果这些接口在你的网络下连不上，填一个<Bold Foreground="#C7D5E0">能出国的代理</Bold>是最有效的办法。
+                    </TextBlock>
+                </Border>
+
+                <TextBlock Text="代理服务器（可选）" Style="{StaticResource FieldLabel}" />
+                <TextBox x:Name="ProxyBox" />
+                <TextBlock Style="{StaticResource Hint}" Margin="0,5,0,0"
+                           Text="例如 Clash / v2ray 的 http://127.0.0.1:7890。留空表示直连。注意：只是本机中转的代理没有帮助，出口必须在境外。" />
+
+                <TextBlock Text="请求超时（毫秒）" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <TextBox x:Name="TimeoutBox" Width="140" HorizontalAlignment="Left" />
+                <TextBlock Style="{StaticResource Hint}" Margin="0,5,0,0"
+                           Text="单次网络请求的最长等待时间，范围 4000 – 60000。网络较慢时可以调大。" />
+
+                <TextBlock Text="Steam Web API Key（可选）" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SteamKeyBox" Grid.Column="0" />
+                    <Button Grid.Column="1" Content="获取 Key" Style="{StaticResource TinyButton}" Margin="8,0,0,0"
+                            Click="OpenSteamKey_Click" />
+                </Grid>
+                <TextBlock Style="{StaticResource Hint}" Margin="0,5,0,0"
+                           Text="只用于“按游戏名查 AppID”的备用方案（api.steampowered.com）。这个域名在很多网络下连不上，需要配合代理才有意义。" />
+
+                <TextBlock Text="SteamGridDB API Key（可选）" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="GridDbKeyBox" Grid.Column="0" />
+                    <Button Grid.Column="1" Content="获取 Key" Style="{StaticResource TinyButton}" Margin="8,0,0,0"
+                            Click="OpenGridDbKey_Click" />
+                </Grid>
+                <TextBlock Style="{StaticResource Hint}" Margin="0,5,0,0"
+                           Text="只用来给 Steam 没有收录的游戏配封面图。注意：SteamGridDB 本身不提供简介，简介由 VNDB / 萌娘百科负责。留空也能用，只是少一个封面来源。" />
+
+                <TextBlock Text="翻译服务 Token（可选）" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <TextBox x:Name="TranslateTokenBox" />
+                <TextBlock Style="{StaticResource Hint}" Margin="0,5,0,0"
+                           Text="简介如果是英文或日文，且找不到中文版本，程序会自动机器翻译（彩云小译 → 有道 → MyMemory，都不需要账号）。留空使用内置的免费额度；如果你自己有彩云小译的 Token，填在这里会更稳定。" />
+
+                <TextBlock Text="背景壁纸（可选）" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="WallpaperInfo" Grid.Column="0" VerticalAlignment="Center"
+                               FontSize="12.5" Foreground="{StaticResource Text}"
+                               TextTrimming="CharacterEllipsis" />
+                    <Button Grid.Column="1" Content="导入图片 / 视频" Style="{StaticResource TinyButton}"
+                            Margin="8,0,0,0" Click="PickWallpaper_Click" />
+                    <Button x:Name="ClearWallpaperButton" Grid.Column="2" Content="清除"
+                            Style="{StaticResource TinyButton}" Margin="8,0,0,0" Click="ClearWallpaper_Click" />
+                </Grid>
+                <TextBlock Style="{StaticResource Hint}" Margin="0,5,0,0"
+                           Text="支持 PNG / JPG / BMP / WEBP / GIF 图片，以及 MP4 视频（循环播放，作为动态壁纸）。分辨率要求不低于 1280 × 720，导入时会自动检查。" />
+
+                <TextBlock Text="窗口大小" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <WrapPanel x:Name="ResolutionPanel" />
+                <TextBlock x:Name="ResolutionInfo" Style="{StaticResource Hint}" Margin="0,6,0,0" />
+
+                <TextBlock Text="后台与开机启动" Style="{StaticResource FieldLabel}" Margin="0,18,0,5" />
+                <CheckBox x:Name="StartupBox" Content="开机自动启动（启动后直接进入后台，不弹窗）"
+                          Checked="Startup_Toggled" Unchecked="Startup_Toggled" />
+                <TextBlock Text="点击关闭按钮时" Style="{StaticResource FieldLabel}" Margin="0,12,0,5" />
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton x:Name="CloseAskBox" Content="每次询问" Margin="0,0,20,0" />
+                    <RadioButton x:Name="CloseTrayBox" Content="最小化到后台" Margin="0,0,20,0" />
+                    <RadioButton x:Name="CloseExitBox" Content="直接退出" />
+                </StackPanel>
+                <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,0"
+                           Text="最小化到后台后程序仍在运行：已经启动的游戏会继续计时，托盘图标双击即可把界面叫回来，右键可以退出。开机自启动写的是当前用户的启动项，不需要管理员权限。" />
+
+                <TextBlock Text="连接测试" Style="{StaticResource FieldLabel}" Margin="0,20,0,5" />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="TestButton" Content="测试连接" Style="{StaticResource TinyButton}" Click="Test_Click" />
+                    <TextBlock Text="按上面填写的内容逐项测试，不会自动保存" FontSize="12"
+                               Foreground="{StaticResource TextDim}" VerticalAlignment="Center" Margin="10,0,0,0" />
+                </StackPanel>
+
+                <ItemsControl x:Name="ResultList" Margin="0,8,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="26" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="13" />
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12.5"
+                                           Foreground="{StaticResource Text}" Margin="0,0,14,0" />
+                                <TextBlock Grid.Column="2" Text="{Binding Message}" FontSize="12"
+                                           Foreground="{StaticResource TextDim}" TextWrapping="Wrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="#131D28" BorderBrush="{StaticResource LineSoft}"
+                BorderThickness="0,1,0,0" Padding="18,12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="取消" Click="Close_Click" />
+                <Button Content="保存" Style="{StaticResource PrimaryButton}" Margin="10,0,0,0" Click="Save_Click" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.RowSpan="3" Style="{StaticResource DialogOutline}" />
+    </Grid>
+</Window>

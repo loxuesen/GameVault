@@ -1,0 +1,47 @@
+<Window x:Class="GameVault.CloseChoiceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{StaticResource DialogWindow}"
+        Title="关闭窗口" Width="450" Height="268" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False" WindowStyle="None">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="0" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource DialogHeader}" MouseLeftButtonDown="Chrome_Drag">
+            <Grid>
+                <TextBlock Text="关闭窗口" Style="{StaticResource DialogTitle}" />
+                <Button Style="{StaticResource DialogCloseButton}" Click="Cancel_Click" />
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="1" Margin="20,16,20,10">
+            <TextBlock Text="要退出程序，还是最小化到后台继续运行？" FontSize="14"
+                       Foreground="{StaticResource Text}" TextWrapping="Wrap" />
+            <TextBlock Style="{StaticResource Hint}" Margin="0,9,0,0"
+                       Text="最小化到后台后程序仍在运行：已经启动的游戏会继续计时，双击托盘图标可以随时把界面叫回来。" />
+            <CheckBox x:Name="RememberBox" Content="记住我的选择，以后不再询问" Margin="0,14,0,0" />
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="#131D28" BorderBrush="{StaticResource LineSoft}"
+                BorderThickness="0,1,0,0" Padding="16,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="取消" Click="Cancel_Click" />
+                <Button Content="最小化到后台" Margin="10,0,0,0" Click="Tray_Click" />
+                <Button Content="退出程序" Style="{StaticResource DangerButton}" Margin="10,0,0,0"
+                        Click="Exit_Click" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.RowSpan="3" Style="{StaticResource DialogOutline}" />
+    </Grid>
+</Window>

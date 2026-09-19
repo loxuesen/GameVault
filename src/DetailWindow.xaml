@@ -1,0 +1,125 @@
+<Window x:Class="GameVault.DetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{StaticResource DialogWindow}"
+        Title="游戏详情" Width="880" Height="760" MinWidth="720" MinHeight="560"
+        ResizeMode="CanResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        WindowStyle="None">
+
+    <!--
+      This window draws its own close button, so the native title bar is removed to avoid
+      showing two of them. WindowChrome keeps edge resizing and window snapping, which a
+      plain WindowStyle="None" would otherwise take away.
+    -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="290" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- ============ hero ============ -->
+        <Border Grid.Row="0" ClipToBounds="True" Background="{StaticResource Panel}">
+            <!-- With no title bar, dragging the artwork is how the window is moved. -->
+            <Grid MouseLeftButtonDown="Chrome_Drag">
+                <Image x:Name="HeroImage" Stretch="UniformToFill" />
+                <Border>
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#33000000" Offset="0" />
+                            <GradientStop Color="#CC0D1117" Offset="0.62" />
+                            <GradientStop Color="#FF16202D" Offset="1" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+
+                <!-- Artwork sits behind this, so the button carries its own dark backdrop. -->
+                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"
+                        Width="30" Height="30" Cursor="Hand" ToolTip="关闭"
+                        AutomationProperties.Name="关闭" Click="Close_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd" Background="#B30B1119" CornerRadius="15">
+                                <TextBlock Text="✕" FontSize="13" Foreground="#DCE6EF"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#E63A5A7D" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <StackPanel VerticalAlignment="Bottom" Margin="24,0,24,14">
+                    <TextBlock x:Name="TitleText" FontSize="27" FontWeight="SemiBold" Foreground="White"
+                               TextTrimming="CharacterEllipsis" />
+                    <WrapPanel x:Name="MetaPanel" Margin="0,8,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============ body ============ -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24,18,16,18">
+            <StackPanel>
+                <TextBlock x:Name="DescriptionText" FontSize="13.5" Foreground="#B6C4D0"
+                           TextWrapping="Wrap" LineHeight="22" />
+
+                <StackPanel x:Name="CategorySection" Margin="0,20,0,0" Visibility="Collapsed">
+                    <TextBlock Text="分类" Style="{StaticResource FieldLabel}" />
+                    <ItemsControl x:Name="CategoryList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+
+                <StackPanel x:Name="ShotSection" Margin="0,20,0,0">
+                    <TextBlock Text="我的图片" Style="{StaticResource FieldLabel}" />
+                    <ItemsControl x:Name="ShotList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+
+                <StackPanel x:Name="DetailSection" Margin="0,20,0,0" Visibility="Collapsed">
+                    <TextBlock x:Name="DetailSectionTitle" Text="详细简介" Style="{StaticResource FieldLabel}" />
+                    <TextBlock x:Name="DetailedText" FontSize="13" Foreground="#9FB0BE"
+                               TextWrapping="Wrap" LineHeight="21" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ============ actions ============ -->
+        <Border Grid.Row="2" Background="#131D28" BorderBrush="{StaticResource LineSoft}"
+                BorderThickness="0,1,0,0" Padding="18,12">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="PlayButton" Content="▶  开始游戏" Style="{StaticResource PrimaryButton}"
+                            MinWidth="130" Click="Play_Click" />
+                    <Button Content="编辑" Margin="10,0,0,0" Click="Edit_Click" />
+                    <Button x:Name="FavButton" Content="☆ 收藏" Margin="10,0,0,0" Click="Fav_Click" />
+                    <Button x:Name="RevealButton" Content="打开所在文件夹" Margin="10,0,0,0" Click="Reveal_Click" />
+                    <Button Content="添加图片" Margin="10,0,0,0" Click="AddShot_Click" />
+                </StackPanel>
+                <Button Content="删除" Style="{StaticResource DangerButton}" HorizontalAlignment="Right"
+                        Click="Delete_Click" />
+            </Grid>
+        </Border>
+
+        <!-- A hairline outline replaces the frame the native title bar used to draw. -->
+        <Border Grid.RowSpan="3" BorderBrush="{StaticResource Line}" BorderThickness="1"
+                IsHitTestVisible="False" />
+    </Grid>
+</Window>

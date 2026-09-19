@@ -1,0 +1,19 @@
+# 构建输出
+bin/
+obj/
+publish/
+dist/
+
+# 本机用户设置
+*.user
+*.suo
+.vs/
+
+# 运行时数据：游戏库、封面、壁纸。
+# 这是每个人自己的东西，不应该提交到仓库里。
+data/
+
+# 临时文件
+*.tmp
+Thumbs.db
+desktop.ini

@@ -1,0 +1,8 @@
+# 仓库里统一用 LF，Windows 检出时也不转换成 CRLF
+* text=auto eol=lf
+
+# 二进制文件不要做换行符处理
+*.png binary
+*.ico binary
+*.exe binary
+*.zip binary

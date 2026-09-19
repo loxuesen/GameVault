@@ -1,0 +1,99 @@
+<Window x:Class="GameVault.ScanWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Style="{StaticResource DialogWindow}"
+        Title="扫描 Steam 库" Width="700" Height="700" MinWidth="560" MinHeight="440"
+        ResizeMode="CanResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        WindowStyle="None">
+
+    <!-- The dialog draws its own close button, so the native title bar is removed to avoid
+         showing two. WindowChrome keeps edge resizing and window snapping. -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0"
+                      CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource DialogHeader}" MouseLeftButtonDown="Chrome_Drag">
+            <Grid>
+                <TextBlock Text="扫描 Steam 库" Style="{StaticResource DialogTitle}" />
+                <Button Style="{StaticResource DialogCloseButton}" Click="Close_Click" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Padding="18,12" BorderBrush="{StaticResource LineSoft}" BorderThickness="0,0,0,1">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="SelectAll" Content="全选" VerticalAlignment="Center" Click="SelectAll_Click" />
+                    <TextBlock x:Name="CountText" Margin="16,0,0,0" VerticalAlignment="Center"
+                               FontSize="12" Foreground="{StaticResource TextDim}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="重新扫描" Style="{StaticResource TinyButton}" Click="Rescan_Click" />
+                    <Button x:Name="ImportButton" Content="导入选中" Style="{StaticResource PrimaryButton}"
+                            Margin="8,0,0,0" Click="Import_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="12,6,8,6">
+            <StackPanel>
+                <TextBlock x:Name="StatusText" Margin="8,10" FontSize="13" Foreground="{StaticResource TextDim}"
+                           TextWrapping="Wrap" />
+                <ItemsControl x:Name="GameList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="Row" CornerRadius="6" Padding="8,6" Margin="0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="104" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding Selected, Mode=TwoWay}"
+                                              IsEnabled="{Binding CanSelect}" VerticalAlignment="Center" />
+
+                                    <Border Grid.Column="1" Width="96" Height="44" CornerRadius="4"
+                                            Background="{StaticResource Panel2}" ClipToBounds="True" Margin="8,0,0,0">
+                                        <Image Source="{Binding Thumb}" Stretch="UniformToFill" />
+                                    </Border>
+
+                                    <TextBlock Grid.Column="2" Text="{Binding Name}" Margin="14,0,0,0"
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+
+                                    <TextBlock Grid.Column="3" Text="{Binding StatusText}" FontSize="12"
+                                               VerticalAlignment="Center" Foreground="{StaticResource TextDim}" />
+                                </Grid>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Row" Property="Background" Value="{StaticResource Hover}" />
+                                </Trigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="3" Background="#131D28" BorderBrush="{StaticResource LineSoft}"
+                BorderThickness="0,1,0,0" Padding="18,12">
+            <Grid>
+                <TextBlock Text="导入后会自动获取简介和封面；失败的游戏可以之后再点「补全简介与封面」。"
+                           FontSize="12" Foreground="{StaticResource TextDim}" VerticalAlignment="Center" />
+                <Button Content="关闭" HorizontalAlignment="Right" Click="Close_Click" />
+            </Grid>
+        </Border>
+
+        <Border Grid.RowSpan="4" Style="{StaticResource DialogOutline}" />
+    </Grid>
+</Window>
